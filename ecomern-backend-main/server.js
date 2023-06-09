@@ -12,7 +12,20 @@ const io = new Server(server, {
   methods: ['GET', 'POST', 'PATCH', "DELETE"]
 })
 
+require('dotenv').config();
 
+const mongoose = require('mongoose');
+
+const connectionStr = 'mongodb+srv://ecom:qwertyqwerty@atlascluster.b2idd9c.mongodb.net/ecom?retryWrites=true&w=majority';
+
+
+mongoose.connect(connectionStr, {useNewUrlparser: true})
+.then(() => console.log('connected to mongodb'))
+.catch(err => console.log(err))
+
+mongoose.connection.on('error', err => {
+  console.log(err)
+})
 const User = require('./models/User');
 const userRoutes = require('./routes/userRoutes');
 const productRoutes = require('./routes/productRoutes');
@@ -48,5 +61,14 @@ app.post('/create-payment', async(req, res)=> {
 server.listen(8080, ()=> {
   console.log('server running at port', 8080)
 })
+
+app.use("/", (req, res) => {
+  return res.json({
+    message: "Welcome to the Node.js REST API using ExpressJS and MongoDB"
+  });
+});
+
+app.use(errorHandler);
+
 
 app.set('socketio', io);
