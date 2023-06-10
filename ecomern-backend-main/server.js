@@ -53,12 +53,7 @@ app.post('/create-payment', async (req, res) => {
   }
 });
 
-// Welcome route
-app.use('/', (req, res) => {
-  return res.json({
-    message: 'Welcome to the Node.js REST API using ExpressJS and MongoDB',
-  });
-});
+
 
 const server = http.createServer(app);
 const io = new Server(server, {
