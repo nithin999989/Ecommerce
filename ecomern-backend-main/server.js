@@ -7,22 +7,18 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET);
 const mongoose = require('mongoose');
 const { Server } = require('socket.io');
 
-const connectionStr =
-  'mongodb+srv://ecom:qwertyqwerty@atlascluster.b2idd9c.mongodb.net/ecom?retryWrites=true&w=majority';
-
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Connection to MongoDB
 mongoose
-  .connect(connectionStr, { useNewUrlParser: true })
-  .then(() => console.log('Connected to MongoDB'))
-  .catch((err) => console.log(err));
-
-mongoose.connection.on('error', (err) => {
-  console.log(err);
-});
+  .connect(process.env.MONGODB_URI, { useNewUrlParser: true })
+  .then(() => {
+    console.log('Connected to MongoDB');
+  })
+  .catch((err) => {
+    console.log(err.message);
+  });
 
 // Models and Routes
 const User = require('./models/User');
@@ -51,6 +47,13 @@ app.post('/create-payment', async (req, res) => {
     console.log(e.message);
     res.status(400).json(e.message);
   }
+});
+
+// Welcome route
+app.use('/', (req, res) => {
+  return res.json({
+    message: 'Welcome to the Node.js REST API using ExpressJS and MongoDB',
+  });
 });
 
 const server = http.createServer(app);
