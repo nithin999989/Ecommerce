@@ -7,18 +7,22 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET);
 const mongoose = require('mongoose');
 const { Server } = require('socket.io');
 
+const connectionStr =
+  'mongodb+srv://ecom:qwertyqwerty@atlascluster.b2idd9c.mongodb.net/ecom?retryWrites=true&w=majority';
+
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+// Connection to MongoDB
 mongoose
-  .connect(process.env.MONGODB_URI, { useNewUrlParser: true })
-  .then(() => {
-    console.log('Connected to MongoDB');
-  })
-  .catch((err) => {
-    console.log(err.message);
-  });
+  .connect(connectionStr, { useNewUrlParser: true })
+  .then(() => console.log('Connected to MongoDB'))
+  .catch((err) => console.log(err));
+
+mongoose.connection.on('error', (err) => {
+  console.log(err);
+});
 
 // Models and Routes
 const User = require('./models/User');
